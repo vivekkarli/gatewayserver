@@ -5,6 +5,8 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
+
 @Configuration
 public class GatewayConfig {
 
@@ -13,15 +15,18 @@ public class GatewayConfig {
         return builder.routes()
                 .route("accounts", r -> r
                         .path("/idealbank/accounts/**")
-                        .filters(f -> f.rewritePath("/idealbank/accounts/(?<segment>.*)","/${segment}"))
+                        .filters(f -> f.rewritePath("/idealbank/accounts/(?<segment>.*)","/${segment}")
+                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
                         .uri("lb://ACCOUNTS"))
                 .route("cards", r -> r
                         .path("/idealbank/cards/**")
-                        .filters(f -> f.rewritePath("/idealbank/cards/(?<segment>.*)","/${segment}"))
+                        .filters(f -> f.rewritePath("/idealbank/cards/(?<segment>.*)","/${segment}")
+                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
                         .uri("lb://CARDS"))
                 .route("loans", r -> r
                         .path("/idealbank/loans/**")
-                        .filters(f -> f.rewritePath("/idealbank/cards/(?<segment>.*)","/${segment}"))
+                        .filters(f -> f.rewritePath("/idealbank/cards/(?<segment>.*)","/${segment}")
+                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
                         .uri("lb://LOANS"))
                 .build();
     }
