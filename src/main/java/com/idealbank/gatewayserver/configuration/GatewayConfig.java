@@ -16,7 +16,9 @@ public class GatewayConfig {
                 .route("accounts", r -> r
                         .path("/idealbank/accounts/**")
                         .filters(f -> f.rewritePath("/idealbank/accounts/(?<segment>.*)","/${segment}")
-                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+                                .circuitBreaker(config -> config.setName("accountsCircuitBreaker")
+                                        .setFallbackUri("forward:/contact-support")))
                         .uri("lb://ACCOUNTS"))
                 .route("cards", r -> r
                         .path("/idealbank/cards/**")
